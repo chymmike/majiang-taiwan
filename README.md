@@ -1,53 +1,58 @@
-# Mahjong. In the browser.
+# 🀄 麻將台灣 (majiang-taiwan)
 
-1: We're talking real "four players sitting around a table" mahjong here. Not the "one player solitaire" game. That game has literally nothing to do with mahjong.
+台灣十六張麻將單機練習遊戲，基於 [Pomax/mahjong](https://github.com/Pomax/mahjong) 修改。
 
-2: This README.md has been kept sparse pending a set of full length development articles that walk through going from "having an idea" to "having finished writing a fully functional game".
+## 特色
 
-### Can I play this game?
+- 🎯 **台灣十六張規則** — 16 張手牌、5 面子 + 1 雀頭
+- 🧮 **台數制計分** — 底 + 台，完整台數表
+- 🤖 **AI 對手** — 3 個 AI 陪你練牌
+- 🇹🇼 **全繁體中文** — UI、牌名、結算全中文化
+- 🎮 **零安裝** — 純 HTML/CSS/JS，瀏覽器直接開打
 
-You sure can! And you don't even need to sign up for anything, or check out any programming code, or do anything beyond just clicking through to the live website: https://pomax.github.io/mahjong
+## 台灣規則支援
 
-Note that mostly due to "that's what we play in our house a lot", this implementation currently comes with "Chinese Classical" and "Cantonese" rules for play and scoring. Additional rules may eventually be written up, but if you want to get ahead of the game and implement one so it can be added to the repo, those will be more than welcome.
+- ✅ 十六張制（5 面子 + 1 雀頭）
+- ✅ 台數制計分（自摸、門清、平胡、碰碰胡、混一色、清一色…）
+- ✅ 連莊 / 拉莊（連一拉一）
+- ✅ 一炮多響（放炮者全賠）
+- ✅ 補花、正花
+- ✅ 槓上開花、搶槓胡、海底撈月、河底撈魚
+- ✅ 大牌：大小三元、大小四喜、天胡、地胡、字一色
 
-### What it looks like
+## 快速開始
 
-![A screenshot of what the live game looks like when set to autoplay](https://user-images.githubusercontent.com/177243/53316594-5767d200-387d-11e9-86e2-ed8957d7feb2.png)
+```bash
+# Clone
+git clone https://github.com/你的帳號/majiang-taiwan.git
+cd majiang-taiwan
 
-### What if I want a different look?
+# 直接用瀏覽器開
+open index.html
+```
 
-Not a problem, since this is just a webpage, you can customize your look using [User Styles](https://userstyles.org/) as much as you like. In fact, if you want to try some of the other styles that other folks already made, have a look at any of the following to see if they suit your mood better!
+不需要 npm、不需要 build，開瀏覽器就能玩。
 
-- https://userstyles.org/styles/217123/mahjong-woodsy-classic (by lexterror)
+## 設定選項
 
-### This is a pure HTML, CSS, and JavaScript game
+| 設定 | 預設值 | 說明 |
+|------|--------|------|
+| 底 | 300 | 基本分 |
+| 每台 | 100 | 每台金額 |
+| 遊戲長度 | 東風戰 | 可選：東風 / 東南 / 全場 |
 
-That means there are no bundlers, no web app packaging, no CSS preprocessors or JS transpiling, just an index.html, a bunch of CSS files, and a bunch of JS files. If you can load the page, you now have a full copy of the game that you can save to your desktop and congratulations, you now have your own copy "installed" without doing anything beyond just downloading the page and its local page assets.
+## 技術
 
-I can hear the web devs amongst you thinking "but... then isn't it horribly inefficient?" to which I'm just going to point out that this is how we used to write the web and it was, and still is, blazing fast. This game has a [Google PageSpeed ranking of 97/98](https://developers.google.com/speed/pagespeed/insights/?url=https%3A%2F%2Fpomax.github.io%2Fmj%2F), so: don't be fooled (or, don't fool yourself) into thinking everything needs to be a web app bundle to be performant.
+- 純 HTML + CSS + JavaScript
+- 無 bundler、無框架
+- Fork 自 [Pomax/mahjong](https://github.com/Pomax/mahjong)
 
-### Debugging using query parameters
+## 文件
 
-Open `index.html` in your browser. Debugging options are set via URL query parameter, however, the way to toggle these is via the settings menu.
+- [PRD.md](./PRD.md) — 產品需求文件
+- [DEVPLAN.md](./DEVPLAN.md) — 開發進程規劃
+- [CHANGELIST.md](./CHANGELIST.md) — 改動點清單
 
-![A screenshot of the settings menu](https://user-images.githubusercontent.com/177243/54255517-a9635580-4515-11e9-8988-0520214e9a52.png)
+## License
 
-### Node based testing
-
-Most of the code is aware of whether it's running in the browser, or in node context. As such, the following things work:
-
-- `node src/js/test/hand-generator` generates all possible hand patterns (based on tile category, not tile face)
-- `node src/js/core/algorithm/tiles-needed.js` runs unit tests
-- `node src/js/core/scoring/chinese-classical.js` runs unit tests
-
-And for full gameplay debugging through play recordings, you can use `node src/js/test/play-game` with the following optional flags:
-
-- `-s <number>` the initial seed value for the pseudo-random number generator (defaults to 1).
-- `-r <number>` the number of games to play, bumping the seed up by 1 for each new game (defaults to 1).
-- `-nw` do **n**ot **w**rite a game log file upon finishing a game (defaults to writing log files).
-- `-cc` use the Chinese Classical ruleset (default ruleset).
-- `-cn` use the Cantonese ruleset.
-
-### I have (a) question(s)!
-
-I'd be happy to answer them! Feel free to [drop me a message](https://mastodon.social/@TheRealPomax) for shallow engagement, or file an issue over on [the issue tracker](https://github.com/Pomax/mahjong/issues) if you need deeper engagement.
+沿用原專案授權。
