@@ -2,7 +2,7 @@ import { Pattern } from "./pattern.js";
 import { PatternSet } from "./pattern-set.js";
 import { unroll } from "../utils/utils.js";
 import { TileSet } from "./tileset.js";
-import { Constants } from "../../../config.js";
+import { Constants, REQUIRED_SETS } from "../../../config.js";
 
 
 /**
@@ -11,7 +11,7 @@ import { Constants } from "../../../config.js";
  * if they already have a winning hand, how many interpretations
  * of the tiles involved there might be.
  */
-function tilesNeeded(tiles, locked=[]) {
+function tilesNeeded(tiles, locked = []) {
   // console.debug('tilesNeeded:', tiles, locked);
   let p = new Pattern(tiles);
 
@@ -21,36 +21,36 @@ function tilesNeeded(tiles, locked=[]) {
 
   // Extract the pair, if there is one.
   let pair = [];
-  locked.some((set,pos) => {
+  locked.some((set, pos) => {
     if (set.type === 'pair') {
       pair.push(set);
-      return locked.splice(pos,1);
+      return locked.splice(pos, 1);
     }
   });
 
   // Then run a pattern expansion!
-  let {results, paths} = p.expand(pair.map(s => s.tilenumber), locked); // TODO: this should not need mapping
+  let { results, paths } = p.expand(pair.map(s => s.tilenumber), locked); // TODO: this should not need mapping
 
   // Is this a winning hand?
   let winpaths = (results.win || []).map(result => {
     let p = pair[0];
     let rpair = new PatternSet('pair', result.pair[0]);
-    return [ (p && p.equals(rpair)) ? p : rpair, ...result.sets ];
+    return [(p && p.equals(rpair)) ? p : rpair, ...result.sets];
   });
   let winner = (winpaths.length > 0);
 
   // Is this a waiting hand?
   delete results.win;
   let lookout = results;
-  let waiting = !winner && lookout.some(list => list.some(type => type.indexOf('32')===0));
+  let waiting = !winner && lookout.some(list => list.some(type => type.indexOf('32') === 0));
 
   // What are the various "compositions" in this hand?
   paths = paths.map(path => unroll(path));
-  let composed = getUniqueCompositions(paths, );
+  let composed = getUniqueCompositions(paths,);
   let to_complete = getStillNeeded(locked, composed);
 
   // And that's all the work we need to do.
-  return { lookout, waiting, composed, to_complete, winner, winpaths};
+  return { lookout, waiting, composed, to_complete, winner, winpaths };
 };
 
 
@@ -74,11 +74,11 @@ function getUniqueCompositions(paths) {
   let composed = [];
 
   paths.forEach(path => path.forEach(part => {
-    if (composed.some(e => e===part)) return;
+    if (composed.some(e => e === part)) return;
     composed.push(part);
   }));
 
-  composed.sort((a,b) => a.length - b.length);
+  composed.sort((a, b) => a.length - b.length);
 
   // And then (2) reduce the 'graph' because something like
   // this...
@@ -97,11 +97,11 @@ function getUniqueCompositions(paths) {
 
   let filtered = [];
 
-  for(let i=0, e=composed.length; i<e; i++) {
+  for (let i = 0, e = composed.length; i < e; i++) {
     let allFound = false;
     let list = composed[i];
 
-    for (let j=i+1; j<e; j++) {
+    for (let j = i + 1; j < e; j++) {
       let other = composed[j];
       allFound = list.every(part => other.find(e => e.equals(part)));
       if (allFound) break;
@@ -119,26 +119,26 @@ function getUniqueCompositions(paths) {
  * path still needs to be a winning composition.
  */
 function getStillNeeded(locked, composed) {
-  let pcount = 1, scount = 4;
+  let pcount = 1, scount = REQUIRED_SETS;
 
   if (locked.length > 0) {
     locked.forEach(set => {
-      if (set.size()===2) pcount--;
+      if (set.size() === 2) pcount--;
       else scount--;
     });
   }
 
   let to_complete = [];
 
-  composed.forEach( (composition, pos) => {
+  composed.forEach((composition, pos) => {
     let p = pcount, s = scount, list = [];
 
     composition.forEach(set => {
-      if (set.size()===2) p--;
+      if (set.size() === 2) p--;
       else s--;
     });
 
-    if (p>0) list.push(Constants.PAIR);
+    if (p > 0) list.push(Constants.PAIR);
     while (s-- > 0) list.push(Constants.SET);
     to_complete[pos] = list;
   });

@@ -18,7 +18,7 @@ class Game {
 
     // This gets redeclared by pause(), but we allocate
     // it here so that it exists as callable noop.
-    this.resume = () => {};
+    this.resume = () => { };
   }
 
   /**
@@ -87,7 +87,7 @@ class Game {
    * the pause lock to ensure that when we're paused,
    * execution is suspended until the lock is released.
    */
-  async continue(where='unknown') {
+  async continue(where = 'unknown') {
     if (this._playLock) {
       console.debug(`paused at ${where}`);
       await this._playLock;
@@ -117,9 +117,9 @@ class Game {
           this.windOfTheRound++;
           if (this.windOfTheRound === 4) {
             let ms = (Date.now() - this.GAME_START);
-            let s = ((ms/10)|0)/100;
+            let s = ((ms / 10) | 0) / 100;
             let finalScores = players.map(p => p.getScore());
-            let highest = finalScores.reduce((t,v) => v>t?v:t, 0);
+            let highest = finalScores.reduce((t, v) => v > t ? v : t, 0);
             let gamewinner = finalScores.indexOf(highest);
             console.log(`\nfull game played: player ${gamewinner} is the winner!`);
             console.log(`(game took ${s}s. ${this.totalPlays} plays: ${this.hand} hands, ${this.totalDraws} draws)`);
@@ -164,10 +164,10 @@ class Game {
     let pre = result.draw ? 'Res' : 'S';
     let logNotice = `${pre}tarting hand ${this.hand}.`;
     let style = `color: red; font-weight: bold; font-size: 120%; border-bottom: 1px solid black;`;
-    console.log(`\n${ (typeof process === "undefined") ? `%c` : `` }${logNotice}`, (typeof process === "undefined") ? style : ``);
+    console.log(`\n${(typeof process === "undefined") ? `%c` : ``}${logNotice}`, (typeof process === "undefined") ? style : ``);
     config.log(`\n${logNotice}`);
 
-    if (this.fixValues) { this.fixValues(); this.fixValues=()=>{}; }
+    if (this.fixValues) { this.fixValues(); this.fixValues = () => { }; }
 
     logNotice = `this.hand=${this.hand}; this.draws=${this.draws}; config.PRNG.seed(${config.PRNG.seed()}); this.wind=${this.wind}; this.windOfTheRound=${this.windOfTheRound};`;
     console.log(logNotice);
@@ -218,8 +218,8 @@ class Game {
     // The internal function for actually
     // giving initial tiles to players.
     let runDeal = async (player, done) => {
-      let bank = wall.get(13);
-      for (let t=0, tile; t<bank.length; t++) {
+      let bank = wall.get(config.HAND_TILE_COUNT);
+      for (let t = 0, tile; t < bank.length; t++) {
         tile = bank[t];
 
         await players.asyncAll(p => p.receivedTile(player));
@@ -297,7 +297,7 @@ class Game {
    * may, of course, be a bonus tile, so keep going until
    * the player no longer reveals their just-dealt tile.
    */
-  async processKong(player, kong, melded=false) {
+  async processKong(player, kong, melded = false) {
     console.debug(`${player.id} plays kong ${kong[0].getTileFace()} (melded: ${melded})`);
     config.log(`${player.id} locks [${kong.map(t => t.getTileFace())}]`);
 
@@ -363,7 +363,7 @@ class Game {
     let discard = this.discard;
     let discardpid = discard ? discard.getFrom() : undefined;
     let currentPlayerId = this.currentPlayerId;
-    this.playDelay = (hand===config.PAUSE_ON_HAND && this.counter===config.PAUSE_ON_PLAY) ? 60*60*1000 : config.PLAY_INTERVAL;
+    this.playDelay = (hand === config.PAUSE_ON_HAND && this.counter === config.PAUSE_ON_PLAY) ? 60 * 60 * 1000 : config.PLAY_INTERVAL;
     let player = players[currentPlayerId];
 
     await players.asyncAll(p => p.activate(currentPlayerId));
@@ -461,7 +461,7 @@ class Game {
 
       let nextHand = () => this.startHand({ draw: true });
       if (!config.BOT_PLAY) {
-        return modal.choiceInput("Hand was a draw", [{label:"OK"}], nextHand, nextHand);
+        return modal.choiceInput("Hand was a draw", [{ label: "OK" }], nextHand, nextHand);
       } else return setTimeout(nextHand, this.playDelay);
     }
 
@@ -546,7 +546,7 @@ class Game {
     // And od course, calculate the scores.
     console.debug("SCORING TILES");
 
-    let scores = fullDisclosure.map((d,id) => this.rules.scoreTiles(d, id, windOfTheRound, this.wall.remaining));
+    let scores = fullDisclosure.map((d, id) => this.rules.scoreTiles(d, id, windOfTheRound, this.wall.remaining));
 
     // In order to make sure payment is calculated correctly,
     // check which player is currently playing east, and then
@@ -554,7 +554,7 @@ class Game {
     let eastid = 0;
 
     // FIXME: TODO: can we get ths information async?
-    players.forEach(p => { if(p.wind === 0) eastid = p.id; });
+    players.forEach(p => { if (p.wind === 0) eastid = p.id; });
 
     let adjustments = this.rules.settleScores(scores, player.id, eastid, discardpid);
 
@@ -629,7 +629,7 @@ class Game {
     let p = -1;
 
     // Who wins the bidding war?
-    claims.forEach((c,pid)=> {
+    claims.forEach((c, pid) => {
       if (c.claimtype > claim) {
         claim = c.claimtype;
         win = c.wintype ? c.wintype : undefined;
@@ -640,8 +640,8 @@ class Game {
     // console.log(claims);
 
     // artificial delay, if required for human play
-    if (currentpid===0 && !config.BOT_PLAY && config.BOT_DELAY_BEFORE_DISCARD_ENDS) {
-      await new Promise( resolve => {
+    if (currentpid === 0 && !config.BOT_PLAY && config.BOT_DELAY_BEFORE_DISCARD_ENDS) {
+      await new Promise(resolve => {
         setTimeout(() => resolve(), config.BOT_DELAY_BEFORE_DISCARD_ENDS);
       });
     }

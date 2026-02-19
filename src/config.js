@@ -131,6 +131,10 @@ if (currentConfig.WALL_HACK || currentConfig.PLAY_IMMEDIATELY) {
   currentConfig.USE_SOUND = true;
 }
 
+// Taiwan 16-tile mahjong: hand size and set count
+const HAND_TILE_COUNT = 16;  // 台灣麻將：16 張手牌
+const REQUIRED_SETS = 5;     // 5 面子 + 1 雀頭
+
 // Constants used during play, for determining
 // claim types on discarded tiles.
 const CLAIM = {
@@ -350,6 +354,10 @@ const config = Object.assign(
     // See above
     Constants,
 
+    // Taiwan 16-tile constants
+    HAND_TILE_COUNT,
+    REQUIRED_SETS,
+
     // See above
     TILE_NAMES,
     TILE_GLYPHS,
@@ -374,4 +382,4 @@ config.set({ DEBUG: currentConfig.DEBUG });
 config.log = playlog.log;
 config.flushLog = playlog.flush;
 
-export { config, CLAIM,  Constants, TILE_NAMES, TILE_GLYPHS, SUIT_NAMES };
+export { config, CLAIM, Constants, TILE_NAMES, TILE_GLYPHS, SUIT_NAMES, HAND_TILE_COUNT, REQUIRED_SETS };
