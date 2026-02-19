@@ -131,6 +131,12 @@ class TaiwanClassical extends Ruleset {
         if (windTile === 27) { // East = 27
             scoreObject.tai += 1;
             scoreObject.log.push(`1 台 莊家`);
+
+            // 連莊加台 (連N拉N)
+            if (this.dealerStreak > 0) {
+                scoreObject.tai += this.dealerStreak;
+                scoreObject.log.push(`${this.dealerStreak} 台 連莊 (連${this.dealerStreak}拉${this.dealerStreak})`);
+            }
         }
 
         // ─── 平胡 (all chows, no honours, not selfdraw, not waiting on pair) ───

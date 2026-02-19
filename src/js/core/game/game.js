@@ -34,6 +34,7 @@ class Game {
     this.draws = 0;
     this.totalDraws = 0;
     this.totalPlays = 0;
+    this.dealerStreak = 0;
     this.finish = whenDone;
     this.rules = Ruleset.getRuleset(config.RULES);
 
@@ -109,6 +110,7 @@ class Game {
       // rotate the winds, unless the winner is East and the ruleset says not to in that case.
       let winner = result.winner;
       if (this.rules.pass_on_east_win || winner.wind !== 0) {
+        this.dealerStreak = 0;
         let windWas = this.wind;
         this.wind = (this.wind + (this.rules.reverse_wind_direction ? 3 : 1)) % 4;
 
@@ -129,7 +131,10 @@ class Game {
             return this.finish(s);
           }
         }
-      } else console.debug(`Winner player was East, winds will not rotate.`);
+      } else {
+        this.dealerStreak++;
+        console.debug(`莊家連莊! 連${this.dealerStreak}拉${this.dealerStreak}`);
+      }
     }
 
     this.totalPlays++;
@@ -451,15 +456,37 @@ class Game {
     // Does someone want to claim this discard?
     await this.continue("just before getAllClaims() in play()");
     claim = await this.getAllClaims(); // players take note of the fact that a discard happened as part of their determineClaim()
-    if (claim) return this.processClaim(player, claim);
+    if (claim) {
+      if (claim.multiple) return this.processMultiWin(player, claim.winners);
+      return this.processClaim(player, claim);
+    }
 
     // No claims: have we run out of tiles?
     if (wall.dead) {
       console.log(`Hand ${hand} is a draw.`);
 
+      // 台灣規則：流局時莊家有聽 → 連莊
+      let eastPlayer = players.find(p => p.wind === 0);
+      let eastTenpai = false;
+      if (eastPlayer) {
+        let need = eastPlayer.tilesNeeded();
+        eastTenpai = need.waiting;
+      }
+      let dealerRetains = !!eastTenpai;
+
+      if (dealerRetains) {
+        this.dealerStreak++;
+        console.debug(`流局連莊: 莊家有聽, 連${this.dealerStreak}`);
+      } else {
+        this.dealerStreak = 0;
+      }
+
       await players.asyncAll(p => p.endOfHand());
 
-      let nextHand = () => this.startHand({ draw: true });
+      let nextHand = () => this.startHand({
+        draw: true,
+        winner: dealerRetains ? eastPlayer : undefined
+      });
       if (!config.BOT_PLAY) {
         return modal.choiceInput("Hand was a draw", [{ label: "OK" }], nextHand, nextHand);
       } else return setTimeout(nextHand, this.playDelay);
@@ -543,8 +570,9 @@ class Game {
 
     await players.asyncAll(p => p.endOfHand(fullDisclosure));
 
-    // And od course, calculate the scores.
+    // And of course, calculate the scores.
     console.debug("SCORING TILES");
+    this.rules.dealerStreak = this.dealerStreak;
 
     let scores = fullDisclosure.map((d, id) => this.rules.scoreTiles(d, id, windOfTheRound, this.wall.remaining));
 
@@ -574,6 +602,63 @@ class Game {
         this.startHand({ winner: player });
       });
     } else this.startHand({ winner: player });
+  }
+
+  /**
+   * Handle 一炮多響 (multiple players win on the same discard).
+   * Each winner is scored independently, and the discarder
+   * pays each winner their respective amount.
+   */
+  async processMultiWin(discarder, winners) {
+    let hand = this.hand;
+    let players = this.players;
+    let windOfTheRound = this.windOfTheRound;
+
+    // Mark all winners
+    let winnerIds = winners.map(w => w.p);
+    winnerIds.forEach(id => players[id].markWinner());
+
+    let message = `一炮多響! Players ${winnerIds.join(', ')} win hand ${hand}!`;
+    console.log(message);
+    config.log(message);
+
+    // Disclose all hands
+    let fullDisclosure = players.map(p => p.getDisclosure());
+    await players.asyncAll(p => p.endOfHand(fullDisclosure));
+
+    // Score each player
+    console.debug("SCORING TILES (一炮多響)");
+    this.rules.dealerStreak = this.dealerStreak;
+
+    let scores = fullDisclosure.map((d, id) => this.rules.scoreTiles(d, id, windOfTheRound, this.wall.remaining));
+
+    // Calculate adjustments: discarder pays each winner separately
+    let adjustments = [0, 0, 0, 0];
+    let discardpid = discarder.id;
+
+    for (let winnerId of winnerIds) {
+      let wscore = scores[winnerId].total;
+      adjustments[winnerId] += wscore;
+      adjustments[discardpid] -= wscore;
+      console.debug(`一炮多響: ${discardpid} 付 ${winnerId} ${wscore}`);
+    }
+
+    await players.asyncAll(p => {
+      config.log(`${p.id}: ${adjustments[p.id]}`);
+      p.recordScores(adjustments);
+    });
+
+    this.scoreHistory.push({ fullDisclosure, scores, adjustments });
+    winnerIds.forEach(id => { scores[id].winner = true; });
+
+    // Use the first winner for wind rotation decision
+    let firstWinner = players[winnerIds[0]];
+
+    if (config.HAND_INTERVAL > 0) {
+      modal.setScores(hand, this.rules, scores, adjustments, () => {
+        this.startHand({ winner: firstWinner });
+      });
+    } else this.startHand({ winner: firstWinner });
   }
 
   /**
@@ -624,20 +709,17 @@ class Game {
 
     console.debug('all claims are in');
 
-    let claim = CLAIM.IGNORE;
-    let win = undefined;
-    let p = -1;
+    // Collect all claims, check for 一炮多響 (multiple win on same discard)
+    let winClaims = [];
+    let highestNonWin = { claimtype: CLAIM.IGNORE, p: -1 };
 
-    // Who wins the bidding war?
     claims.forEach((c, pid) => {
-      if (c.claimtype > claim) {
-        claim = c.claimtype;
-        win = c.wintype ? c.wintype : undefined;
-        p = pid;
+      if (c.claimtype === CLAIM.WIN) {
+        winClaims.push({ claimtype: c.claimtype, wintype: c.wintype, p: pid });
+      } else if (c.claimtype > highestNonWin.claimtype) {
+        highestNonWin = { claimtype: c.claimtype, wintype: c.wintype, p: pid };
       }
     });
-
-    // console.log(claims);
 
     // artificial delay, if required for human play
     if (currentpid === 0 && !config.BOT_PLAY && config.BOT_DELAY_BEFORE_DISCARD_ENDS) {
@@ -646,9 +728,13 @@ class Game {
       });
     }
 
-    let winningClaim = (p === -1) ? undefined : { claimtype: claim, wintype: win, p };
-    // console.log(winningClaim);
-    return winningClaim;
+    // Multiple winners? Return all of them (一炮多響)
+    if (winClaims.length > 1) {
+      console.debug(`一炮多響: ${winClaims.length} 家胡牌`);
+      return { multiple: true, winners: winClaims };
+    }
+    if (winClaims.length === 1) return winClaims[0];
+    return highestNonWin.p === -1 ? undefined : highestNonWin;
   }
 
   /**
