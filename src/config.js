@@ -3,8 +3,9 @@ import { playlog } from "./js/core/utils/logger.js";
 
 import "./js/core/scoring/cantonese.js";
 import "./js/core/scoring/chinese-classical.js";
+import "./js/core/scoring/taiwan-classical.js";
 
-const noop = () => {};
+const noop = () => { };
 const __console_debug = console.debug.bind(console);
 
 const DEFAULT_CONFIG = {
@@ -20,7 +21,7 @@ const DEFAULT_CONFIG = {
   SEED: 0,
 
   // The ruleset to play with.
-  RULES: `Chinese Classical`,
+  RULES: `Taiwan Classical`,
 
   // This determines whether you get asked to
   // choose normal vs. automated play when you
@@ -134,6 +135,8 @@ if (currentConfig.WALL_HACK || currentConfig.PLAY_IMMEDIATELY) {
 // Taiwan 16-tile mahjong: hand size and set count
 const HAND_TILE_COUNT = 16;  // 台灣麻將：16 張手牌
 const REQUIRED_SETS = 5;     // 5 面子 + 1 雀頭
+const BASE_SCORE = 300;      // 底
+const TAI_SCORE = 20;        // 每台分數
 
 // Constants used during play, for determining
 // claim types on discarded tiles.
@@ -357,6 +360,8 @@ const config = Object.assign(
     // Taiwan 16-tile constants
     HAND_TILE_COUNT,
     REQUIRED_SETS,
+    BASE_SCORE,
+    TAI_SCORE,
 
     // See above
     TILE_NAMES,
@@ -382,4 +387,4 @@ config.set({ DEBUG: currentConfig.DEBUG });
 config.log = playlog.log;
 config.flushLog = playlog.flush;
 
-export { config, CLAIM, Constants, TILE_NAMES, TILE_GLYPHS, SUIT_NAMES, HAND_TILE_COUNT, REQUIRED_SETS };
+export { config, CLAIM, Constants, TILE_NAMES, TILE_GLYPHS, SUIT_NAMES, HAND_TILE_COUNT, REQUIRED_SETS, BASE_SCORE, TAI_SCORE };

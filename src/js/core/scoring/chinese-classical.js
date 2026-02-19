@@ -28,17 +28,17 @@ class ChineseClassical extends Ruleset {
   getPairValue(tile, locked, concealed, names, windTile, windOfTheRoundTile) {
     if (tile > 30) return {
       score: 2,
-      log: [ `2 for pair of dragons (${names[tile]})` ]
+      log: [`2 for pair of dragons (${names[tile]})`]
     };
 
     if (tile === windTile) return {
       score: 2,
-      log: [ `2 for pair of own wind (${names[tile]})` ]
+      log: [`2 for pair of own wind (${names[tile]})`]
     };
 
     if (tile === windOfTheRoundTile) return {
       score: 2,
-      log: [ `2 for pair of wind of the round (${names[tile]})` ]
+      log: [`2 for pair of wind of the round (${names[tile]})`]
     };
   }
 
@@ -50,7 +50,7 @@ class ChineseClassical extends Ruleset {
     let prefix = (locked && !concealed) ? "" : "concealed ";
     let value = 0;
 
-    if (tile>30) {
+    if (tile > 30) {
       value = locked ? 4 : 8;
       return {
         score: value,
@@ -67,7 +67,7 @@ class ChineseClassical extends Ruleset {
       let scoreObject = {
         score: value,
         doubles: 0,
-        log: [ `${value} for ${prefix}pung of winds (${names[tile]})` ]
+        log: [`${value} for ${prefix}pung of winds (${names[tile]})`]
       };
       if (tile === windTile) {
         scoreObject.doubles += 1;
@@ -91,7 +91,7 @@ class ChineseClassical extends Ruleset {
       }
       return {
         score: value,
-        log: [ `${value} for ${prefix}pung of ${type} (${names[tile]})` ]
+        log: [`${value} for ${prefix}pung of ${type} (${names[tile]})`]
       };
     }
   }
@@ -112,8 +112,8 @@ class ChineseClassical extends Ruleset {
     else if (ccount === 3) prefix = `claimed `;
     else if (ccount === 4) prefix = `concealed `;
 
-    if (tile>30) {
-      value = (locked || ccount===3) ? 16 : 32;;
+    if (tile > 30) {
+      value = (locked || ccount === 3) ? 16 : 32;;
       return {
         score: value,
         doubles: 1,
@@ -125,11 +125,11 @@ class ChineseClassical extends Ruleset {
     }
 
     if (tile > 26) {
-      value = (locked || ccount===3) ? 16 : 32;
+      value = (locked || ccount === 3) ? 16 : 32;
       let scoreObject = {
         score: value,
         doubles: 0,
-        log: [ `${value} for ${prefix}kong of winds (${names[tile]})` ]
+        log: [`${value} for ${prefix}kong of winds (${names[tile]})`]
       };
       if (tile === windTile) {
         scoreObject.doubles += 1;
@@ -146,14 +146,14 @@ class ChineseClassical extends Ruleset {
       let type;
       if (tile % 9 === 0 || tile % 9 === 8) {
         type = `terminals`;
-        value = (locked || ccount===3) ? 16 : 32;
+        value = (locked || ccount === 3) ? 16 : 32;
       } else {
         type = `simple`;
-        value = (locked || ccount===3) ? 8 : 16;
+        value = (locked || ccount === 3) ? 8 : 16;
       }
       return {
         score: value,
-        log: [ `${value} for ${prefix}kong of ${type} (${names[tile]})` ]
+        log: [`${value} for ${prefix}kong of ${type} (${names[tile]})`]
       };
     }
   }
@@ -168,12 +168,12 @@ class ChineseClassical extends Ruleset {
 
     scorePattern.forEach(set => {
       let tile = set[0];
-      if (tile===31) g = set.length;
-      if (tile===32) r = set.length;
-      if (tile===33) w = set.length;
+      if (tile === 31) g = set.length;
+      if (tile === 32) r = set.length;
+      if (tile === 33) w = set.length;
     });
 
-    if (r + g + w >= 8 && (r===2 || g===2 || w===2)) {
+    if (r + g + w >= 8 && (r === 2 || g === 2 || w === 2)) {
       scoreObject.doubles += 1;
       scoreObject.log.push(`1 double for little three dragons`);
     }
@@ -259,12 +259,12 @@ class ChineseClassical extends Ruleset {
       scoreObject.limit = `Big four winds (pung or kong of each wind)`;
     }
 
-    if (state.concealedCount === 5) {
+    if (state.concealedCount === (config.REQUIRED_SETS + 1)) {
       scoreObject.doubles += 1;
       scoreObject.log.push(`1 double for fully concealed hand`);
     }
 
-    if (state.concealedCount === 5 && state.punghand) {
+    if (state.concealedCount === (config.REQUIRED_SETS + 1) && state.punghand) {
       scoreObject.limit = `Fully concealed pung hand`;
     }
 

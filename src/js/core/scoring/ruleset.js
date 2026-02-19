@@ -94,6 +94,7 @@ class Ruleset {
   getLimitPoints(selfdraw) {
     if (this.scoretype === Ruleset.POINTS_DOUBLES) return this.getPointsDoubleLimit();
     if (this.scoretype === Ruleset.FAAN_LAAK) return this.getFaanLaakLimit(selfdraw);
+    if (this.scoretype === Ruleset.TAIWAN_BASE_TAI) return this.limit;
     console.error('unknown scoring type');
     return 0;
   }
@@ -103,7 +104,7 @@ class Ruleset {
    */
   checkForLimit(allTiles, lockedSize) {
     if (allTiles.length < 14) return;
-    const tiles = () => allTiles.slice().map(t => t|0).sort();
+    const tiles = () => allTiles.slice().map(t => t | 0).sort();
     if (this.limits.hasThirteenOrphans(tiles())) return `Thirteen orphans`;
     if (this.limits.hasNineGates(tiles(), lockedSize)) return `Nine gates`;
   }
@@ -132,7 +133,7 @@ class Ruleset {
     let adjustments = [0, 0, 0, 0];
     let eastWinFactor = (winningplayer === eastplayer) ? 2 : 1;
     let wscore = scores[winningplayer].total;
-    let selfdraw = (discardpid===false);
+    let selfdraw = (discardpid === false);
 
     console.debug(`winning score: ${wscore}, double east? ${this.east_doubles_up}`);
 
@@ -146,7 +147,7 @@ class Ruleset {
           let paysAsEast = (i === eastplayer) ? 2 : 1;
           difference *= Math.max(eastWinFactor, paysAsEast);
         }
-        if ((this.discard_pays_double && i===discardpid) || (this.selfdraw_pays_double && selfdraw)) {
+        if ((this.discard_pays_double && i === discardpid) || (this.selfdraw_pays_double && selfdraw)) {
           difference *= 2;
         }
         adjustments[winningplayer] += difference;
@@ -207,9 +208,9 @@ class Ruleset {
   }
 
   // implemented by subclasses
-  checkBonusTilePoints(bonus, windTile, names, result) {}
-  checkHandPatterns(scorePattern, windTile, windOfTheRoundTile, tilesLeft, result) {}
-  checkWinnerHandPatterns(scorePattern, winset, selfdraw, windTile, windOfTheRoundTile, tilesLeft, scoreObject) {}
+  checkBonusTilePoints(bonus, windTile, names, result) { }
+  checkHandPatterns(scorePattern, windTile, windOfTheRoundTile, tilesLeft, result) { }
+  checkWinnerHandPatterns(scorePattern, winset, selfdraw, windTile, windOfTheRoundTile, tilesLeft, scoreObject) { }
 
   // Aggregate all the points for individual sets into a single score object
   aggregateScorePattern(scorePattern, windTile, windOfTheRoundTile) {
@@ -218,16 +219,16 @@ class Ruleset {
       .filter(v => v)
       .reduce((t, v) => {
         t.score += v.score;
-        t.doubles += (v.doubles||0);
+        t.doubles += (v.doubles || 0);
         t.log = t.log.concat(v.log);
         return t;
-      },{ score: 0, doubles: 0, log: [] });
+      }, { score: 0, doubles: 0, log: [] });
   }
 
   /**
    * ...docs go here...
    */
-  getTileScore(scorePattern, windTile, windOfTheRoundTile, bonus, winset, winner=false, selfdraw=false, selftile=false, robbed=false, tilesLeft) {
+  getTileScore(scorePattern, windTile, windOfTheRoundTile, bonus, winset, winner = false, selfdraw = false, selftile = false, robbed = false, tilesLeft) {
     let names = config.TILE_NAMES;
     let result = this.aggregateScorePattern(scorePattern, windTile, windOfTheRoundTile);
     result.wind = windTile;
@@ -305,11 +306,11 @@ class Ruleset {
       suit: false,
       selfdraw: selfdraw,
       robbed: robbed,
-      lastTile: (tilesLeft<=0)
+      lastTile: (tilesLeft <= 0)
     };
 
     // classic limit hands
-    state.allGreen = scorePattern.every(set => set.tiles().every(t => [1,2,3,5,7,31].indexOf(t) > -1));
+    state.allGreen = scorePattern.every(set => set.tiles().every(t => [1, 2, 3, 5, 7, 31].indexOf(t) > -1));
 
     let tiles, tile, tilesuit;
     scorePattern.forEach(set => {
@@ -322,7 +323,7 @@ class Ruleset {
       if (tile < 27) {
         if (state.suit === false) state.suit = tilesuit;
         else if (state.suit !== tilesuit) state.onesuit = false;
-        if (tiles.some(t => (t%9) !== 0 && (t%9) !== 8)) {
+        if (tiles.some(t => (t % 9) !== 0 && (t % 9) !== 8)) {
           state.terminals = false;
           state.allterminals = false;
         }
@@ -335,7 +336,7 @@ class Ruleset {
       if (tiles.length === 2) {
         if (winset) {
           let wintiles = winset.tiles();
-          state.outonPair = (wintiles.length===2 && wintiles[0]===tiles[0]);
+          state.outonPair = (wintiles.length === 2 && wintiles[0] === tiles[0]);
           state.pairTile = wintiles[0];
         }
         else if (!winset && selfdraw && tiles[0] === selftile) {
@@ -423,7 +424,7 @@ class Ruleset {
     // and into the sets themselves, instead.
     locked = locked.map(set => {
       if (set.length === 4) {
-        let ccount = set.reduce((tally,t) => tally + (t.isConcealed() ? 1 : 0), 0);
+        let ccount = set.reduce((tally, t) => tally + (t.isConcealed() ? 1 : 0), 0);
         if (ccount >= 3) set.concealed = `${ccount}`;
       }
       return set;
@@ -450,7 +451,7 @@ class Ruleset {
     // least one winning path for this person to have won.
     if (winner) {
       // first check for non-standard-pattern limit hands
-      let limit = this.checkForLimit(allTiles, locked.reduce((t,s) => t + s.length, 0));
+      let limit = this.checkForLimit(allTiles, locked.reduce((t, s) => t + s.length, 0));
       if (limit) {
         config.log('limit hand');
         return this.generateLimitObject(limit, selfdraw);
@@ -468,7 +469,7 @@ class Ruleset {
       // If there is nothing to be formed with the tiles in hand,
       // then we need to create an empty path, so that we at
       // least still compute score based on just the locked tiles.
-      if(openCompositions.length === 0) openCompositions.push([]);
+      if (openCompositions.length === 0) openCompositions.push([]);
     }
 
     // Run through each possible interpetation of in-hand
@@ -491,7 +492,7 @@ class Ruleset {
     config.log('possible scores:', possibleScores);
 
     // And then make sure we award each player the highest score they're elligible for.
-    let finalScore = possibleScores.sort( (a,b) => { a = a.total; b = b.total; return a - b; }).slice(-1)[0];
+    let finalScore = possibleScores.sort((a, b) => { a = a.total; b = b.total; return a - b; }).slice(-1)[0];
     config.log('final score:', finalScore);
 
     if (!finalScore) {
@@ -504,9 +505,9 @@ class Ruleset {
     return finalScore;
   }
 
-   /**
-   * Determine how this hand could be improved
-   */
+  /**
+  * Determine how this hand could be improved
+  */
   _determineImprovement(concealed, locked, composed, to_complete, tiletracker) {
     return [];
   }
@@ -514,7 +515,7 @@ class Ruleset {
   /**
    * ...docs go here...
    */
-  determineImprovement(player, tilesLeft, winner=false) {
+  determineImprovement(player, tilesLeft, winner = false) {
     let concealed = player.getTileFaces();
     let locked = player.locked;
     let data = this.scoreTiles({
@@ -533,6 +534,7 @@ class Ruleset {
 
 Ruleset.FAAN_LAAK = Symbol();
 Ruleset.POINTS_DOUBLES = Symbol();
+Ruleset.TAIWAN_BASE_TAI = Symbol();
 
 /**
  * Set up ruleset registration/fetching by name. Note that
@@ -543,7 +545,7 @@ Ruleset.POINTS_DOUBLES = Symbol();
 (() => {
   let rulesets = {};
 
-  Ruleset.register = function(RulesetClass) {
+  Ruleset.register = function (RulesetClass) {
     let naturalName = RulesetClass.name.replace(/([a-z])([A-Z])/g, (_, b, c) => `${b} ${c}`);
     rulesets[naturalName] = new RulesetClass();
   };

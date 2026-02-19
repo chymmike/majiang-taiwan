@@ -80,12 +80,12 @@ class Cantonese extends Ruleset {
 
     scorePattern.forEach(set => {
       let tile = set[0];
-      if (tile===31) g = set.length;
-      if (tile===32) r = set.length;
-      if (tile===33) w = set.length;
+      if (tile === 31) g = set.length;
+      if (tile === 32) r = set.length;
+      if (tile === 33) w = set.length;
     });
 
-    if (r + g + w >= 8 && (r===2 || g===2 || w===2)) {
+    if (r + g + w >= 8 && (r === 2 || g === 2 || w === 2)) {
       scoreObject.score += 4;
       scoreObject.log.push(`4 faan for little three dragons`);
     }
@@ -151,7 +151,7 @@ class Cantonese extends Ruleset {
       scoreObject.limit = `Big four winds (pung or kong of each wind)`;
     }
 
-    if (state.concealedCount === 5) {
+    if (state.concealedCount === (config.REQUIRED_SETS + 1)) {
       scoreObject.score += 1;
       scoreObject.log.push(`1 faan for fully concealed hand`);
     }
@@ -184,7 +184,7 @@ class Cantonese extends Ruleset {
       result.log.push(`1 faan for own flower and season`);
     }
 
-    if (hasOwnSeason)  {
+    if (hasOwnSeason) {
       result.score += 1;
       result.log.push(`1 faan for own flower and season`);
     }
