@@ -13,6 +13,7 @@ class GameTile extends HTMLElement {
   static get observedAttributes() {
     return [
       `bonus`,
+      `from`,
       `tile`,
       `locked`,
       `locknum`,
