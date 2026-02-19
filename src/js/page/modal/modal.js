@@ -103,9 +103,8 @@ class Modal {
       }
 
       row = document.createElement(`tr`);
-      let field = `<input class="${key} field" type"${
-        type || `text`
-      }" value="${value}">`;
+      let field = `<input class="${key} field" type"${type || `text`
+        }" value="${value}">`;
 
       if (options || toggle) {
         options = toggle ? [true, false] : options;
@@ -113,11 +112,10 @@ class Modal {
         field = `
           <select class="${key} field">
             ${options.map(
-              (opt) =>
-                `<option value="${opt}"${
-                  opt === value ? ` selected` : ``
-                }>${`${opt}`.replace(/_/g, " ")}</option>`
-            )}
+          (opt) =>
+            `<option value="${opt}"${opt === value ? ` selected` : ``
+            }>${`${opt}`.replace(/_/g, " ")}</option>`
+        )}
           </select>`;
       }
 
@@ -144,9 +142,8 @@ class Modal {
       }
 
       row.innerHTML = `
-        <td style="white-space: nowrap;" data-toggle="${key}" ${
-        toggle && !value ? `class="greyed"` : ``
-      }>${label}</td>
+        <td style="white-space: nowrap;" data-toggle="${key}" ${toggle && !value ? `class="greyed"` : ``
+        }>${label}</td>
         <td ${value != default_value ? ` class="custom"` : ``}>${field}</td>
       `;
       table.appendChild(row);
@@ -200,7 +197,7 @@ class Modal {
    * Add a generic footer with an "OK" button,
    * and automated focus handling.
    */
-  addFooter(panel, modalLabel = "OK", resolve = () => {}, botDismissible) {
+  addFooter(panel, modalLabel = "確定", resolve = () => { }, botDismissible) {
     let ok = document.createElement("button");
     ok.textContent = modalLabel;
     ok.addEventListener("click", () => {
@@ -216,7 +213,7 @@ class Modal {
     if (config.BOT_PLAY && botDismissible) {
       let dismiss = () => ok.click();
       setTimeout(() => dismiss(), config.HAND_INTERVAL);
-      panel.addEventListener("click", () => (dismiss = () => {}));
+      panel.addEventListener("click", () => (dismiss = () => { }));
     }
 
     panel.gainFocus = () => ok.focus();

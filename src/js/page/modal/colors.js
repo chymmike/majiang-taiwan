@@ -43,11 +43,11 @@ class ColorModal {
    */
   show() {
     const panel = this.modal.makePanel(`settings`);
-    panel.innerHTML = `<h3>Change CSS Colors</h3>`;
+    panel.innerHTML = `<h3>CSS 配色</h3>`;
     const options = this.getOptions(panel);
     const table = this.modal.buildPanelContent(options);
     this.addFormControls(table);
-    this.modal.addFooter(panel, "Close");
+    this.modal.addFooter(panel, "關閉");
   }
 
   addFormControls(table) {
@@ -55,7 +55,7 @@ class ColorModal {
     row.classList.add(`spacer-1`);
     row.innerHTML = `
         <td colspan="2">
-          <input id="reset" type="reset" value="Reset to default settings">
+          <input id="reset" type="reset" value="恢復預設">
         </td>
       `;
     table.appendChild(row);

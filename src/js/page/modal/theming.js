@@ -8,7 +8,7 @@ function fileLoader(evt) {
       reader.onload = (e) => {
         file.dataURL = e.target.result;
         if (file.size > 500000) {
-          alert("Images over 500kb are not supported");
+          alert("不支援超過 500KB 的圖片");
           return reject();
         }
         resolve(file);
@@ -114,11 +114,11 @@ class ThemeModal {
    */
   show() {
     const panel = this.modal.makePanel(`settings`);
-    panel.innerHTML = `<h3>Change the game theme</h3>`;
+    panel.innerHTML = `<h3>外觀主題</h3>`;
     const options = this.getOptions();
     const table = this.modal.buildPanelContent(options);
     this.addFormControls(panel, table, options);
-    this.modal.addFooter(panel, "Close");
+    this.modal.addFooter(panel, "關閉");
   }
 
   addFormControls(panel, table, options) {
@@ -126,7 +126,7 @@ class ThemeModal {
     row.classList.add(`spacer-1`);
     row.innerHTML = `
       <td colspan="2">
-        <input id="reset" type="reset" value="Reset to default settings">
+        <input id="reset" type="reset" value="恢復預設">
       </td>
     `;
     table.appendChild(row);
@@ -144,28 +144,28 @@ class ThemeModal {
 
     const options = [
       {
-        label: "Background image",
+        label: "背景圖片",
         type: `file`,
         handler: handle("Background"),
       },
       {
-        label: "Sidebar image",
+        label: "側欄圖片",
         type: `file`,
         handler: handle("Sidebar"),
       },
       {
-        label: "Player banks",
+        label: "玩家區域",
         type: `file`,
         handler: handle("PlayerBanks"),
       },
       {
-        label: "Tileset",
+        label: "牌面圖案",
         type: `file`,
         handler: handle("Tileset"),
       },
       {
-        label: "CSS colors",
-        button_label: "Change...",
+        label: "CSS 配色",
+        button_label: "修改...",
         type: `button`,
         evtType: `click`,
         handler: (entry, evt) => {

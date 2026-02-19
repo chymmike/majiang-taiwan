@@ -488,7 +488,7 @@ class Game {
         winner: dealerRetains ? eastPlayer : undefined
       });
       if (!config.BOT_PLAY) {
-        return modal.choiceInput("Hand was a draw", [{ label: "OK" }], nextHand, nextHand);
+        return modal.choiceInput("流局", [{ label: "確定" }], nextHand, nextHand);
       } else return setTimeout(nextHand, this.playDelay);
     }
 

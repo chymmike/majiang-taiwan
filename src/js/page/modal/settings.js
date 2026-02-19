@@ -1,6 +1,6 @@
 import { config } from "../../../config.js";
 import { Ruleset } from "../../core/scoring/ruleset.js";
-import { WallHack  } from "../../core/game/wall/wall-hack.js";
+import { WallHack } from "../../core/game/wall/wall-hack.js";
 
 class SettingsModal {
   constructor(modal) {
@@ -10,11 +10,9 @@ class SettingsModal {
   show() {
     let panel = this.modal.makePanel(`settings`);
     panel.innerHTML = `
-      <h3>Change the game settings</h3>
+      <h3>遊戲設定</h3>
       <p>
-        The follow settings change how the game works, but while
-        the first three options are related to playing the game,
-        all the other options are primarily intended for debugging.
+        前三個為遊戲選項，其餘為除錯用。
       </p>
     `;
     const options = this.getOptions();
@@ -23,7 +21,7 @@ class SettingsModal {
     form.setAttribute("action", "index.html");
     form.setAttribute("method", "GET");
     this.addFormControls(panel, form, options);
-    this.modal.addFooter(panel, "Closing without saving");
+    this.modal.addFooter(panel, "關閉（不儲存）");
   }
 
   addFormControls(panel, form, options) {
@@ -32,10 +30,10 @@ class SettingsModal {
     row.classList.add(`spacer-1`);
     row.innerHTML = `
       <td>
-        <input id="reset" type="reset" value="Reset to default settings">
+        <input id="reset" type="reset" value="恢復預設">
       </td>
       <td>
-        <input id="ok" type="submit" value="Play using these settings">
+        <input id="ok" type="submit" value="使用這些設定開始">
       </td>
     `;
     table.appendChild(row);
@@ -46,7 +44,7 @@ class SettingsModal {
         .filter((e) => e.value != e.default_value)
         .map((e) => `${e.key}=${e.value}`)
         .join("&");
-        globalThis.location.search = suffix ? `?${suffix}` : ``;
+      globalThis.location.search = suffix ? `?${suffix}` : ``;
     });
 
     let ok = table.querySelector(`#ok`);
@@ -59,7 +57,7 @@ class SettingsModal {
   getOptions() {
     const options = [
       {
-        label: `Rules`,
+        label: `規則`,
         key: `rules`,
         options: [...Ruleset.getRulesetNames()],
       },
@@ -67,17 +65,17 @@ class SettingsModal {
         // basic boolean flags:
       },
       {
-        label: `🀄 Always show everyone's tiles`,
+        label: `🀄 顯示所有玩家手牌`,
         key: `force_open_bot_play`,
         toggle: true,
       },
       {
-        label: `✨ Highlight claimable discards`,
+        label: `✨ 標示可吃碰的牌`,
         key: `show_claim_suggestion`,
         toggle: true,
       },
       {
-        label: `💬 Show bot play suggestions`,
+        label: `💬 顯示電腦建議`,
         key: `show_bot_suggestion`,
         toggle: true,
       },
@@ -85,33 +83,33 @@ class SettingsModal {
         // additional boolean flags:
       },
       {
-        label: `🎵 Play sounds`,
+        label: `🎵 音效`,
         key: `use_sound`,
         toggle: true,
       },
       {
-        label: `🟢 Start play immediately`,
+        label: `🟢 直接開始遊戲`,
         key: `play_immediately`,
         toggle: true,
       },
       {
-        label: `⏸️ Pause game unless focused`,
+        label: `⏸️ 非聚焦時暫停`,
         key: `pause_on_blur`,
         toggle: true,
       },
       {
-        label: `💻 Turn on debug mode`,
+        label: `💻 除錯模式`,
         key: `debug`,
         toggle: true,
       },
       {
-        label: `❌ Pretend previous round was a draw`,
+        label: `❌ 模擬上局流局`,
         key: `force_draw`,
         toggle: true,
         debug_only: true,
       },
       {
-        label: `📃 Generate game log after play`,
+        label: `📃 結束後產生記錄檔`,
         key: `write_game_log`,
         toggle: true,
         debug_only: true,
@@ -120,34 +118,34 @@ class SettingsModal {
         // numerical values:
       },
       {
-        label: `Set game PRNG seed`,
+        label: `亂數種子`,
         key: `seed`,
         debug_only: true,
       },
       {
-        label: `Bot quick play threshold`,
+        label: `電腦快速出牌門檻`,
         key: `bot_chicken_threshold`,
         debug_only: true,
       },
       {
-        label: `Delay (in ms) between player turns`,
+        label: `每手間隔 (毫秒)`,
         key: `play_interval`,
       },
       {
-        label: `Delay (in ms) before starting next hand`,
+        label: `每局間隔 (毫秒)`,
         key: `hand_interval`,
       },
       {
-        label: `Delay (in ms) for bots reacting to things`,
+        label: `電腦反應延遲 (毫秒)`,
         key: `bot_delay_before_discard_ends`,
       },
       {
-        label: `Delay (in ms) during full bot play`,
+        label: `電腦自動打延遲 (毫秒)`,
         key: `bot_play_delay`,
       },
       // and debug hacking
       {
-        label: `Set up a specific wall`,
+        label: `指定牌山`,
         key: `wall_hack`,
         options: [``, ...Object.keys(WallHack.hacks)],
         debug_only: true,

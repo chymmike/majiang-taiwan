@@ -42,23 +42,23 @@ import { rotateWinds } from "../core/players/ui/windicator.js";
   // Optional bot play.
   function offerChoice() {
     const options = [
-      { description: "There are currently two modes of play on offer:" },
-      { label: "I'd like to play some mahjong!", value: "play" },
-      { label: "I just want to watch the bots play", value: "watch" },
+      { description: "目前提供以下模式：" },
+      { label: "我要打麻將！", value: "play" },
+      { label: "看電腦自動打", value: "watch" },
       {
-        description: "Alternatively, you can modify the game settings:",
+        description: "或者修改遊戲設定：",
         align: "center",
       },
-      { label: "Change settings", value: "settings", back: true },
-      { label: "Change theming", value: "theming", back: true },
+      { label: "遊戲設定", value: "settings", back: true },
+      { label: "外觀主題", value: "theming", back: true },
       {
-        description: "(you can also open the settings during play)",
+        description: "（遊戲中也可以開啟設定）",
         align: "center",
       },
     ];
     options.fixed = true;
     modal.choiceInput(
-      "Welcome! What would you like to do?",
+      "歡迎！請選擇模式",
       options,
       (result) => {
         config.BOT_PLAY = result === "watch";

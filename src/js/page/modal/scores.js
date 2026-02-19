@@ -10,7 +10,7 @@ class ScoreModal {
    */
   showFinalScores(gameui, rules, scoreHistory, resolve) {
     let panel = this.modal.makePanel(`final-scores`);
-    panel.innerHTML = `<h3>Game finished</h3>`;
+    panel.innerHTML = `<h3>遊戲結束</h3>`;
 
     let base = new Array(4).fill(rules.player_start_score);
 
@@ -19,11 +19,11 @@ class ScoreModal {
     table.appendChild(tbody);
     tbody.innerHTML = `
       <tr>
-        <th>hand</th>
-        <th>player 0</th>
-        <th>player 1</th>
-        <th>player 2</th>
-        <th>player 3</th>
+        <th>局</th>
+        <th>玩家 0</th>
+        <th>玩家 1</th>
+        <th>玩家 2</th>
+        <th>玩家 3</th>
         <th>&nbsp;</th>
       </tr>
       <tr>
@@ -33,25 +33,25 @@ class ScoreModal {
       </tr>
     `;
 
-    scoreHistory.forEach((record,hand) => {
+    scoreHistory.forEach((record, hand) => {
       hand = hand + 1;
       let row = document.createElement('tr');
-      let content = [0,1,2,3].map(id => {
+      let content = [0, 1, 2, 3].map(id => {
         let winner = record.fullDisclosure[id].winner;
         let value = record.adjustments[id];
         let score = (base[id] = base[id] + value);
         let wind = record.fullDisclosure[id].wind;
-        let title = [winner?'winner':false, wind===0?'east':false].filter(v=>v).join(', ');
+        let title = [winner ? '胡牌' : false, wind === 0 ? '莊家' : false].filter(v => v).join(', ');
         return `
           <td title="${title}">
-            <span${wind===0 ? ` class="east"`:``} >${winner ? `<strong>${score}</strong>` : score}</span>
+            <span${wind === 0 ? ` class="east"` : ``} >${winner ? `<strong>${score}</strong>` : score}</span>
           </td>
         `;
       });
       row.innerHTML = `
         <td>${hand}</td>
         ${content.join('\n')}
-        <td><button>details</button></td>
+        <td><button>明細</button></td>
       `;
       row.querySelector('button').addEventListener('click', () => {
         // load a specific hand ending into the UI
@@ -63,7 +63,7 @@ class ScoreModal {
     });
     panel.appendChild(table);
 
-    this.modal.addFooter(panel, "Back to the menu", resolve);
+    this.modal.addFooter(panel, "回到主選單", resolve);
     panel.scrollTop = 0;
   }
 
@@ -72,31 +72,31 @@ class ScoreModal {
    */
   show(hand, rules, scores, adjustments, resolve) {
     let panel = this.modal.makePanel(`scores`);
-    panel.innerHTML = `<h3>Scores for hand ${hand}</h3>`;
+    panel.innerHTML = `<h3>第 ${hand} 局計分</h3>`;
 
     let faanSystem = (rules.scoretype === Ruleset.FAAN_LAAK);
     let winner = 0;
-    scores.some((e,id) => { winner = id; return e.winner; });
+    scores.some((e, id) => { winner = id; return e.winner; });
 
     let builder = document.createElement('div');
     builder.innerHTML = `
     <table>
       <tr>
         <th>&nbsp;</th>
-        <th>player 0</th>
-        <th>player 1</th>
-        <th>player 2</th>
-        <th>player 3</th>
+        <th>玩家 0</th>
+        <th>玩家 1</th>
+        <th>玩家 2</th>
+        <th>玩家 3</th>
       </tr>
       <tr>
-        <td>winner</td>
+        <td>胡牌</td>
         <td>${scores[0].winner ? '*' : ''}</td>
         <td>${scores[1].winner ? '*' : ''}</td>
         <td>${scores[2].winner ? '*' : ''}</td>
         <td>${scores[3].winner ? '*' : ''}</td>
       </tr>
       <tr>
-        <td>${faanSystem ? `points` : `basic`}</td>
+        <td>${faanSystem ? `台數` : `底分`}</td>
         <td>${scores[0].score}</td>
         <td>${scores[1].score}</td>
         <td>${scores[2].score}</td>
@@ -104,7 +104,7 @@ class ScoreModal {
       </tr>
       ${faanSystem ? `` : `
       <tr>
-        <td>doubles</td>
+        <td>翻數</td>
         <td>${scores[0].doubles}</td>
         <td>${scores[1].doubles}</td>
         <td>${scores[2].doubles}</td>
@@ -112,14 +112,14 @@ class ScoreModal {
       </tr>
       `}
       <tr>
-        <td>total</td>
+        <td>合計</td>
         <td>${scores[0].total}</td>
         <td>${scores[1].total}</td>
         <td>${scores[2].total}</td>
         <td>${scores[3].total}</td>
       </tr>
       <tr>
-        <td>win/loss</td>
+        <td>輸贏</td>
         <td>${adjustments[0]}</td>
         <td>${adjustments[1]}</td>
         <td>${adjustments[2]}</td>
@@ -127,10 +127,10 @@ class ScoreModal {
       </tr>
       <tr class="details">
         <td>&nbsp;</td>
-        <td>${ !faanSystem || (faanSystem && winner===0) ? `<button>details</button>` : ``}</td>
-        <td>${ !faanSystem || (faanSystem && winner===1) ? `<button>details</button>` : ``}</td>
-        <td>${ !faanSystem || (faanSystem && winner===2) ? `<button>details</button>` : ``}</td>
-        <td>${ !faanSystem || (faanSystem && winner===3) ? `<button>details</button>` : ``}</td>
+        <td>${!faanSystem || (faanSystem && winner === 0) ? `<button>明細</button>` : ``}</td>
+        <td>${!faanSystem || (faanSystem && winner === 1) ? `<button>明細</button>` : ``}</td>
+        <td>${!faanSystem || (faanSystem && winner === 2) ? `<button>明細</button>` : ``}</td>
+        <td>${!faanSystem || (faanSystem && winner === 3) ? `<button>明細</button>` : ``}</td>
       </tr>
     </table>
     `;
@@ -138,15 +138,15 @@ class ScoreModal {
     Array
       .from(table.querySelectorAll('tr.details td'))
       .slice(1)
-      .map((e,pid) => {
+      .map((e, pid) => {
         e.addEventListener('click', evt => {
           this.showScoreDetails(pid, scores[pid].log, faanSystem);
         });
       });
     panel.appendChild(table);
 
-    if (resolve) this.modal.addFooter(panel, "Play next hand", resolve, true);
-    else this.modal.addFooter(panel, "OK");
+    if (resolve) this.modal.addFooter(panel, "打下一局", resolve, true);
+    else this.modal.addFooter(panel, "確定");
   }
 
   /**
@@ -154,19 +154,19 @@ class ScoreModal {
    */
   showScoreDetails(pid, log, faanSystem) {
     let panel = this.modal.makePanel(`score-breakdown`);
-    panel.innerHTML = `<h3>Score breakdown for player ${pid}</h3>`;
+    panel.innerHTML = `<h3>玩家 ${pid} 計分明細</h3>`;
 
     let table = document.createElement('table');
     let data = [
-      `<tr><th>points</th><th>element</th></tr>`,
+      `<tr><th>分數</th><th>項目</th></tr>`,
       ...log.map(line => {
         let mark = ` for `;
         if (line.indexOf(mark) > -1) {
           let parts = line.split(mark);
-          let pts = parts[0].replace(/doubles?/, `dbl`).replace(/faan/,'');
+          let pts = parts[0].replace(/doubles?/, `dbl`).replace(/faan/, '');
           return `<tr><td>${pts}</td><td>${parts[1]}</td></tr>`;
         } else {
-          if (faanSystem)  return ``;
+          if (faanSystem) return ``;
           return `<tr><td colspan="2">${line}</td></tr>`;
         }
       })
@@ -174,7 +174,7 @@ class ScoreModal {
     table.innerHTML = data.join(`\n`);
     panel.appendChild(table);
 
-    this.modal.addFooter(panel, "Back to the scores");
+    this.modal.addFooter(panel, "返回計分");
   }
 }
 

@@ -43,7 +43,7 @@ class ClientUIMaster {
     this.theming.addEventListener(`click`, () => modal.pickTheming());
 
     this.el = this.playerbanks[this.id];
-    this.reset(0,0);
+    this.reset(0, 0);
 
     // Super debug setting: allows bots to tap directly
     // into the player`s UI. This is super bad, but for
@@ -58,7 +58,7 @@ class ClientUIMaster {
    * ...docs go here...
    */
   reset(wind, windOfTheRound, hand, draws) {
-    if(!this.el) return;
+    if (!this.el) return;
 
     this.el.setAttribute(`class`, `player`);
     this.playerbanks.forEach(b => {
@@ -92,8 +92,8 @@ class ClientUIMaster {
     Object.keys(tiles).forEach(tile => {
       let div = document.createElement(`div`);
       div.classList.add(`tile-count`);
-      if (tile>33) div.classList.add(`hidden`);
-      for(let i=0; i<4; i++) {
+      if (tile > 33) div.classList.add(`hidden`);
+      for (let i = 0; i < 4; i++) {
         let e = create(tile);
         div.appendChild(e);
       }
@@ -163,7 +163,7 @@ class ClientUIMaster {
       },
       ms,
       (count) => {
-        let fraction = count===10 ? 1 : count/10;
+        let fraction = count === 10 ? 1 : count / 10;
         this.bar.style.width = `${100 - 100 * fraction}%`;
         if (fraction === 1) {
           this.bar.classList.remove(`active`);
@@ -198,9 +198,9 @@ class ClientUIMaster {
    */
   handWillStart(redraw, resolve) {
     if (config.BOT_PLAY) return resolve();
-    let heading = `Ready to start playing?`;
-    if (redraw) heading = `Ready to replay hand?`;
-    modal.choiceInput(heading, [{label: `ready!`,value: false}], resolve);
+    let heading = `準備好了嗎？`;
+    if (redraw) heading = `重新打這局？`;
+    modal.choiceInput(heading, [{ label: `開始！`, value: false }], resolve);
   }
 
   /**
@@ -217,7 +217,7 @@ class ClientUIMaster {
    */
   markTilesLeft(remaining) {
     let ui = document.querySelector(`.wall.data`);
-    ui.textContent = `${remaining} tiles left`;
+    ui.textContent = `剩餘 ${remaining} 張`;
   }
 
   /**
@@ -228,9 +228,9 @@ class ClientUIMaster {
     if (config.BOT_PLAY) return resolve(true);
 
     let cancel = () => resolve(false);
-    modal.choiceInput(`Declare kong (${config.TILE_NAMES[tile]})?`, [
-      { label: `Absolutely`, value: `yes` },
-      { label: `No, I have plans for those tiles`, value: `no` },
+    modal.choiceInput(`是否槓 (${config.TILE_NAMES[tile]})？`, [
+      { label: `是`, value: `yes` },
+      { label: `不，我另有打算`, value: `no` },
     ], result => {
       if (result === `yes`) resolve(true);
       else resolve(false);
@@ -293,7 +293,7 @@ class ClientUIMaster {
       t2 = tile + 2;
     }
     if (type === CLAIM.CHOW2) {
-      if (face===0 || face===8) return false;
+      if (face === 0 || face === 8) return false;
       t1 = tile - 1;
       t2 = tile + 1;
     }
@@ -310,7 +310,7 @@ class ClientUIMaster {
    * Triggered when either the hand was a draw, or someone won,
    * with the full game disclosure available in case of a win.
    */
-  endOfHand(disclosure, force_reveal_player=false) {
+  endOfHand(disclosure, force_reveal_player = false) {
     if (!disclosure) {
       playClip(`draw`);
       this.discards.classList.add(`exhausted`);
@@ -319,7 +319,7 @@ class ClientUIMaster {
 
     if (!force_reveal_player) playClip(`win`);
 
-    disclosure.forEach( (res,id) => {
+    disclosure.forEach((res, id) => {
       if (id == this.id && !force_reveal_player) return;
       let bank = this.playerbanks[id];
       bank.innerHTML = ``;
@@ -343,7 +343,7 @@ class ClientUIMaster {
         locknum += s.length;
       });
 
-      res.concealed.sort((a,b)=>(a-b)).forEach(t => bank.appendChild(create(t)));
+      res.concealed.sort((a, b) => (a - b)).forEach(t => bank.appendChild(create(t)));
 
       if (res.winner) {
         this.discards.classList.add(`winner`);
@@ -364,12 +364,12 @@ class ClientUIMaster {
     rotateWinds.done();
     playClip(`end`);
 
-    let v=0, b=-1;
-    scores.forEach( (score,id) => { if (score>v) { v = score; b = id; }});
-    this.playerbanks.forEach( (bank,id) => {
+    let v = 0, b = -1;
+    scores.forEach((score, id) => { if (score > v) { v = score; b = id; } });
+    this.playerbanks.forEach((bank, id) => {
       bank.classList.remove(`waiting`);
       bank.classList.remove(`winner`);
-      if (id===b) bank.classList.add(`game-winner`);
+      if (id === b) bank.classList.add(`game-winner`);
     });
 
     // clear out the player banks, discards, and tile tracker.
@@ -412,7 +412,7 @@ class ClientUIMaster {
    * hand this is, and what its wind of the round is.
    */
   markHand(hand, wind) {
-    this.el.dataset.wind = [`東`,`南`,`西`,`北`][wind];
+    this.el.dataset.wind = [`東`, `南`, `西`, `北`][wind];
   }
 
   /**
@@ -463,7 +463,7 @@ class ClientUIMaster {
     }
     if (!t.isLocked()) {
       t.mark(`latest`);
-      t.setTitle(`latest tile`);
+      t.setTitle(`最新摸牌`);
     }
     this.el.appendChild(t);
     this.sortTiles();
@@ -481,7 +481,7 @@ class ClientUIMaster {
    * from tiles in their hand, and the current discard
    */
   lockClaim(tiles) {
-    playClip(tiles.length===4 ? `kong` : `multi`);
+    playClip(tiles.length === 4 ? `kong` : `multi`);
 
     this.removeLastDiscard();
     let locknum = 1 + this.getLockedTiles().length;
@@ -508,7 +508,7 @@ class ClientUIMaster {
    * Triggered when a player discards a tile from their hand.
    */
   playerDiscarded(player, tile, playcounter) {
-    playClip(playcounter===1 ? `thud` : `click`);
+    playClip(playcounter === 1 ? `thud` : `click`);
 
     let bank = this.playerbanks[player.id];
 
@@ -566,7 +566,7 @@ class ClientUIMaster {
    * This function falls through to `see()`
    */
   seeClaim(tiles, player, claim) {
-    playClip(tiles.length===4 ? `kong` : `multi`);
+    playClip(tiles.length === 4 ? `kong` : `multi`);
 
     // this differs from see() in that we know we need to remove one
     // `blank` tile fewer than are being revealed. So we add one, and
@@ -598,10 +598,10 @@ class ClientUIMaster {
    * other player claimed the discard for some purpose.
    */
   renderClaimAnnouncement(pid, claimtype) {
-    let label = `win`;
-    if (claimtype === 16) label = `kong`;
-    if (claimtype === 8) label = `pung`;
-    if (claimtype < 8) label = `chow`;
+    let label = `胡`;
+    if (claimtype === 16) label = `槓`;
+    if (claimtype === 8) label = `碰`;
+    if (claimtype < 8) label = `吃`;
     let ann = document.createElement(`div`);
     ann.classList.add(`announcement`);
     ann.textContent = `${label}!`;
@@ -628,18 +628,18 @@ class ClientUIMaster {
    * (either the user, or one of the bot players).
    */
   sortTiles(bank) {
-    bank = (bank||this.el);
+    bank = (bank || this.el);
     Array
-    .from(bank.querySelectorAll(`game-tile`))
-    .sort(this.tilebank_sort_function)
-    .forEach(tile => bank.appendChild(tile));
+      .from(bank.querySelectorAll(`game-tile`))
+      .sort(this.tilebank_sort_function)
+      .forEach(tile => bank.appendChild(tile));
   }
 
   /**
    * Get all `locked=locked` tiles in a player`s tile bank.
    */
   getLockedTiles(bank) {
-    return (bank||this.el).querySelectorAll(`game-tile[locked]`);
+    return (bank || this.el).querySelectorAll(`game-tile[locked]`);
   }
 
   /**
@@ -668,7 +668,7 @@ class ClientUIMaster {
    * Get either all tiles, or all `not locked` tiles.
    */
   getTiles(allTiles) {
-    return this.el.querySelectorAll(`game-tile${allTiles ? ``: `:not([locked])`}`);
+    return this.el.querySelectorAll(`game-tile${allTiles ? `` : `:not([locked])`}`);
   }
 
   /**
@@ -685,7 +685,7 @@ class ClientUIMaster {
    * 3: unlocked tiles, sorted
    * 4: concealed tiles
    */
-  tilebank_sort_function(a,b) {
+  tilebank_sort_function(a, b) {
     try {
       let la = a.getLockNumber();
       let lb = b.getLockNumber();
@@ -694,22 +694,22 @@ class ClientUIMaster {
       b = b.getTileFace();
 
       // 1: bonus tiles always go on the far left
-      if (a>33 || b>33) {
-        if (a>33 && b>33) return a-b;
-        if (a>33) return -1;
+      if (a > 33 || b > 33) {
+        if (a > 33 && b > 33) return a - b;
+        if (a > 33) return -1;
         return 1;
       }
 
       // 2: locked tiles
       if (la || lb) {
-        if (la && lb) return (la===lb) ? a - b : la - lb;
+        if (la && lb) return (la === lb) ? a - b : la - lb;
         if (la) return -1;
         return 1;
       }
 
       // 4 (out of order): for concealed tiles to the right
-      if (a===-1) return 1;
-      if (b===-1) return -1;
+      if (a === -1) return 1;
+      if (b === -1) return -1;
 
       // 3: plain compare for regular tiles
       return a - b;

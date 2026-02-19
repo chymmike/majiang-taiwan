@@ -25,7 +25,7 @@ class ClientUI extends ClientUIMaster {
   }
 
   removeListeners(target, event) {
-    let removals = this.listeners.filter(data => (data.target === target && data.event===event));
+    let removals = this.listeners.filter(data => (data.target === target && data.event === event));
     removals.forEach(data => {
       let opts = {};
       if (data.event.indexOf('touch') !== -1) opts.passive = true;
@@ -49,12 +49,12 @@ class ClientUI extends ClientUIMaster {
 
   pause(lock) {
     super.pause(lock);
-    if(this.claimTimer) this.claimTimer.pause();
+    if (this.claimTimer) this.claimTimer.pause();
   }
 
   resume() {
     super.resume();
-    if(this.claimTimer) this.claimTimer.resume();
+    if (this.claimTimer) this.claimTimer.resume();
   }
 
   /**
@@ -130,9 +130,9 @@ class ClientUI extends ClientUIMaster {
     let currentTile = this.currentTile;
     let curid = this.curid;
     if (VK_LEFT[code]) curid = (currentTile === false) ? tlen - 1 : (curid === 0) ? tlen - 1 : curid - 1;
-    if (VK_RIGHT[code]) curid = (currentTile === false) ? 0 : (curid === tlen-1) ? 0 : curid + 1;
+    if (VK_RIGHT[code]) curid = (currentTile === false) ? 0 : (curid === tlen - 1) ? 0 : curid + 1;
     if (VK_START[code]) curid = 0;
-    if (VK_END[code]) curid = tlen-1;
+    if (VK_END[code]) curid = tlen - 1;
     currentTile = this.markCurrentTile(curid);
 
     // "up"/"signal" is the discard action.
@@ -226,9 +226,9 @@ class ClientUI extends ClientUIMaster {
     // console.log('scent of claim?', this.id, ':', this.player.lastClaim);
 
     let cancel = () => resolve(undefined);
-    modal.choiceInput("Declare win?", [
-      { label: 'You better believe it!', value: 'win' },
-      { label: 'No, I think I can do better...', value: '' },
+    modal.choiceInput("是否宣告胡牌？", [
+      { label: '胡了！', value: 'win' },
+      { label: '不，我還能更大...', value: '' },
     ], result => {
       if (result) {
         if (!this.player.lastClaim) {
@@ -243,7 +243,7 @@ class ClientUI extends ClientUIMaster {
   /**
    * Discard a selected tile from the player's hand
    */
-  discardCurrentHighlightedTile(suggestions=[], resolve) {
+  discardCurrentHighlightedTile(suggestions = [], resolve) {
     let tiles = this.getAvailableTiles();
     this.cancelLongPress();
     suggestions.forEach(suggestion => {
@@ -254,7 +254,7 @@ class ClientUI extends ClientUIMaster {
     })
     let latest = this.player.latestTile;
     if (latest) latest.unmark('latest');
-    tiles.forEach(tile => tile.unmark('selectable','highlight','suggestion'));
+    tiles.forEach(tile => tile.unmark('selectable', 'highlight', 'suggestion'));
     this.removeAllListeners();
     resolve(this.currentTile);
   }
@@ -274,7 +274,7 @@ class ClientUI extends ClientUIMaster {
     if (allInHand.length === 4) canKong = true;
 
     // can we meld a kong?
-    else if (this.player.locked.some(set => set.every(t => t.getTileFace()==face))) canKong = true;
+    else if (this.player.locked.some(set => set.every(t => t.getTileFace() == face))) canKong = true;
 
     // can we declare a standard win?
     let { winpaths } = this.player.tilesNeeded();
@@ -282,18 +282,18 @@ class ClientUI extends ClientUIMaster {
 
     // can we declare a limit hand?
     if (!canWin) {
-      let allTiles = this.getTileFaces(true).filter(t => t<34);
+      let allTiles = this.getTileFaces(true).filter(t => t < 34);
       canWin = this.player.rules.checkForLimit(allTiles);
     }
 
     // build the self-declare options for this action
     let options = [
-      { label: "on second thought, never mind", value: CLAIM.IGNORE },
-      canKong ? { label: "I'm declaring a kong", value: CLAIM.KONG } : false,
-      canWin ? { label: "I just won", value: CLAIM.WIN } : false
-    ].filter(v=>v);
+      { label: "不了，算了", value: CLAIM.IGNORE },
+      canKong ? { label: "我要槓", value: CLAIM.KONG } : false,
+      canWin ? { label: "我胡了", value: CLAIM.WIN } : false
+    ].filter(v => v);
 
-    modal.choiceInput("Declare a kong or win?", options, result => {
+    modal.choiceInput("是否槓牌或胡牌？", options, result => {
       if (result === CLAIM.IGNORE) {
         if (restore) return restore();
       }
@@ -350,7 +350,7 @@ class ClientUI extends ClientUIMaster {
   setupInputListening(tile, mayChow, interrupt, resolve) {
     tile.mark('selectable');
     let discards = this.discards;
-    this.listen(tile, "click",  evt => this.triggerClaimDialog(tile, mayChow, interrupt, resolve));
+    this.listen(tile, "click", evt => this.triggerClaimDialog(tile, mayChow, interrupt, resolve));
     this.listen(discards, "click", evt => this.safelyIgnoreDicard(evt, tile, mayChow, interrupt, resolve));
     this.listen(discards, "mousedown", evt => this.verifyPauseProtection());
     this.listen(discards, "touchstart", evt => this.verifyPauseProtection());
@@ -373,7 +373,7 @@ class ClientUI extends ClientUIMaster {
    */
   getDistanceToTile(evt, tile) {
     let bbox = tile.getBoundingClientRect();
-    let midpoint = { x: (bbox.left + bbox.right)/2, y: (bbox.top + bbox.bottom)/2 };
+    let midpoint = { x: (bbox.left + bbox.right) / 2, y: (bbox.top + bbox.bottom) / 2 };
     let vector = { x: midpoint.x - evt.clientX, y: midpoint.y - evt.clientY };
     return Math.sqrt(vector.x ** 2 + vector.y ** 2);
   }
@@ -437,12 +437,12 @@ class ClientUI extends ClientUIMaster {
    */
   tryClaimHighlight(pid, tile, mayChow) {
     let face = tile.getTileFace();
-    let suit = ((face/9)|0);
+    let suit = ((face / 9) | 0);
     let { lookout } = this.player.tilesNeeded();
     let types = lookout[face];
 
     if (types) {
-      for(let type of types) {
+      for (let type of types) {
         if (CLAIM.CHOW <= type && type < CLAIM.PUNG && !mayChow) continue
         return tile.mark('highlight');
       }
@@ -459,13 +459,13 @@ class ClientUI extends ClientUIMaster {
   tryChowHighlight(tile, mayChow, face, suit) {
     if (mayChow && face < 27 && this.getSingleTileFromHand(face)) {
       let
-      n1 = face < 26 && this.getSingleTileFromHand(face+1), sn1 = (((face+1)/9)|0),
-      n2 = face < 25 && this.getSingleTileFromHand(face+2), sn2 = (((face+2)/9)|0),
-      p2 = face > 1 && this.getSingleTileFromHand(face-2), sp2 = (((face-2)/9)|0),
-      p1 = face > 0 && this.getSingleTileFromHand(face-1), sp1 = (((face-1)/9)|0),
-      c1 = n2 && n1 && sn2===suit && sn1===suit,
-      c2 = n1 && p1 && sn1===suit && sp1===suit,
-      c3 = p2 && p1 && sp2===suit && sp1===suit;
+        n1 = face < 26 && this.getSingleTileFromHand(face + 1), sn1 = (((face + 1) / 9) | 0),
+        n2 = face < 25 && this.getSingleTileFromHand(face + 2), sn2 = (((face + 2) / 9) | 0),
+        p2 = face > 1 && this.getSingleTileFromHand(face - 2), sp2 = (((face - 2) / 9) | 0),
+        p1 = face > 0 && this.getSingleTileFromHand(face - 1), sp1 = (((face - 1) / 9) | 0),
+        c1 = n2 && n1 && sn2 === suit && sn1 === suit,
+        c2 = n1 && p1 && sn1 === suit && sp1 === suit,
+        c3 = p2 && p1 && sp2 === suit && sp1 === suit;
       if (c1 || c2 || c3) tile.mark("highlight");
     }
   }
@@ -481,14 +481,14 @@ class ClientUI extends ClientUIMaster {
 
     console.debug(this.player.id, tile, mayChow, this, this.canPung(tile));
 
-    modal.choiceInput("What kind of claim are you making?", [
-      { label: "Ignore", value: CLAIM.IGNORE },
-      (mayChow && this.canChow(tile, CLAIM.CHOW1)) ? { label: "Chow (▮▯▯)", value: CLAIM.CHOW1 } : false,
-      (mayChow && this.canChow(tile, CLAIM.CHOW2)) ? { label: "Chow (▯▮▯)", value: CLAIM.CHOW2 } : false,
-      (mayChow && this.canChow(tile, CLAIM.CHOW3)) ? { label: "Chow (▯▯▮)", value: CLAIM.CHOW3 } : false,
-      this.canPung(tile) ? { label: "Pung", value: CLAIM.PUNG } : false,
-      this.canKong(tile) ? { label: "Kong", value: CLAIM.KONG } : false,
-      { label: "Win", value: CLAIM.WIN }, // Let's not pre-filter this one
+    modal.choiceInput("你要怎麼吃/碰/槓？", [
+      { label: "過", value: CLAIM.IGNORE },
+      (mayChow && this.canChow(tile, CLAIM.CHOW1)) ? { label: "吃 (▮▯▯)", value: CLAIM.CHOW1 } : false,
+      (mayChow && this.canChow(tile, CLAIM.CHOW2)) ? { label: "吃 (▯▮▯)", value: CLAIM.CHOW2 } : false,
+      (mayChow && this.canChow(tile, CLAIM.CHOW3)) ? { label: "吃 (▯▯▮)", value: CLAIM.CHOW3 } : false,
+      this.canPung(tile) ? { label: "碰", value: CLAIM.PUNG } : false,
+      this.canKong(tile) ? { label: "槓", value: CLAIM.KONG } : false,
+      { label: "胡", value: CLAIM.WIN }, // Let's not pre-filter this one
     ], result => {
       tile.unmark('highlight');
       tile.unmark('suggestion');
@@ -513,22 +513,22 @@ class ClientUI extends ClientUIMaster {
         if (!waiting) return;
         let need = lookout[tile];
         if (!need) return;
-        let reasons = need.filter(v => v.indexOf('32')!==0);
+        let reasons = need.filter(v => v.indexOf('32') !== 0);
         if (reasons.length === 0) return;
         claim = {
           from: pid,
           tile: tile,
           claimtype: CLAIM.WIN,
-          wintype: (reasons[0]|0),
+          wintype: (reasons[0] | 0),
         };
       })();
     }
 
     if (!claim) return resolve();
 
-    modal.choiceInput("Win by robbing a kong?", [
-      { label: 'You better believe it!', value: 'win' },
-      { label: 'No, I think I can do better...', value: '' },
+    modal.choiceInput("搶槓胡？", [
+      { label: '胡了！', value: 'win' },
+      { label: '不，我還能更大...', value: '' },
     ], result => {
       if (result) return resolve(claim);
       resolve();
@@ -559,15 +559,15 @@ class ClientUI extends ClientUIMaster {
     }
 
     let options = [
-      { label: "Actually, it doesn't", value: CLAIM.IGNORE },
-      winOptions.pair ? { label: "Pair", value: CLAIM.PAIR } : false,
-      winOptions.chow && this.canChow(discard, CLAIM.CHOW1) ? { label: "Chow (▮▯▯)", value: CLAIM.CHOW1 } : false,
-      winOptions.chow && this.canChow(discard, CLAIM.CHOW2) ? { label: "Chow (▯▮▯)", value: CLAIM.CHOW2 } : false,
-      winOptions.chow && this.canChow(discard, CLAIM.CHOW3) ? { label: "Chow (▯▯▮)", value: CLAIM.CHOW3 } : false,
-      winOptions.pung ? { label: "Pung", value: CLAIM.PUNG } : false
+      { label: "其實沒有", value: CLAIM.IGNORE },
+      winOptions.pair ? { label: "對子", value: CLAIM.PAIR } : false,
+      winOptions.chow && this.canChow(discard, CLAIM.CHOW1) ? { label: "吃 (▮▯▯)", value: CLAIM.CHOW1 } : false,
+      winOptions.chow && this.canChow(discard, CLAIM.CHOW2) ? { label: "吃 (▯▮▯)", value: CLAIM.CHOW2 } : false,
+      winOptions.chow && this.canChow(discard, CLAIM.CHOW3) ? { label: "吃 (▯▯▮)", value: CLAIM.CHOW3 } : false,
+      winOptions.pung ? { label: "碰", value: CLAIM.PUNG } : false
     ];
 
-    modal.choiceInput("How does this tile make you win?", options, result => {
+    modal.choiceInput("這張牌怎麼讓你胡？", options, result => {
       if (result === CLAIM.IGNORE) resolve({ claimtype: CLAIM.IGNORE });
       else resolve({ claimtype: CLAIM.WIN, wintype: result });
     }, cancel);
