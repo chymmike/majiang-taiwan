@@ -1,5 +1,5 @@
 :root {
-  --ph: 4em;
+  --ph: 3.2em;
   --sep: 3px;
   --main-play-border: calc(3 * var(--sep));
 
@@ -53,7 +53,7 @@ ul {
 }
 
 li,
-li > p {
+li>p {
   text-indent: 0;
 }
 
@@ -63,13 +63,14 @@ li img {
   border-radius: 5px;
 }
 
-li + li {
+li+li {
   margin-top: 1em;
 }
 
 section table {
   margin-left: 2em;
 }
+
 section table td {
   border: 1px solid var(--table-border);
   text-align: center;
