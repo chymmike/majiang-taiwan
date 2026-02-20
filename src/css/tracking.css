@@ -1,15 +1,22 @@
-
 .sidebar {
   background: var(--board-background);
   background-image: url('../../img/background/opacity-05-strip.png');
-  width: 10em;
-  height: var(--h);
-  position: relative;
-  z-index: 2;
-  right: calc(-100% - var(--sep));
-  top: calc(6.5em - calc(var(--h) / 2));
+  /* Size matching */
+  height: calc(100% + 4rem);
+  /* Match board content + 2rem top + 2rem bottom border */
   width: calc(4em + calc(2 * var(--sep)));
+
+  /* Positioning */
+  position: absolute;
+  top: -2rem;
+  /* Align with top of board border */
+  right: calc(-4em - 6px - 2rem);
+  /* Flush against the right 2rem border */
+
+  z-index: 2;
   border: 1px solid var(--sidebar-border);
+  /* Remove left border to look connected if desired, or keep for separation. 
+     User said "connected", but maybe just aligned. Let's keep border for now but flush. */
   box-sizing: border-box;
 }
 
