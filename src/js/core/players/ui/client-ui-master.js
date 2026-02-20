@@ -687,6 +687,7 @@ class ClientUIMaster {
    */
   tilebank_sort_function(a, b) {
     try {
+      let elA = a, elB = b;
       let la = a.getLockNumber();
       let lb = b.getLockNumber();
 
@@ -710,6 +711,12 @@ class ClientUIMaster {
       // 4 (out of order): for concealed tiles to the right
       if (a === -1) return 1;
       if (b === -1) return -1;
+
+      // 3.5: latest tile goes to the far right (before concealed)
+      let aLatest = elA.classList.contains('latest');
+      let bLatest = elB.classList.contains('latest');
+      if (aLatest && !bLatest) return 1;
+      if (!aLatest && bLatest) return -1;
 
       // 3: plain compare for regular tiles
       return a - b;
