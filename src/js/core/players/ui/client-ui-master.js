@@ -329,7 +329,10 @@ class ClientUIMaster {
       return;
     }
 
-    if (!force_reveal_player) playClip(`win`);
+    if (!force_reveal_player) {
+      playClip(`win`);
+      playClip(`win_voice`);
+    }
 
     disclosure.forEach((res, id) => {
       if (id == this.id && !force_reveal_player) return;
@@ -495,6 +498,14 @@ class ClientUIMaster {
   lockClaim(tiles) {
     playClip(tiles.length === 4 ? `kong` : `multi`);
 
+    if (tiles.length === 4) {
+      playClip(`kong_voice`);
+    } else {
+      let face0 = tiles[0].dataset ? tiles[0].getTileFace() : tiles[0];
+      let face1 = tiles[1].dataset ? tiles[1].getTileFace() : tiles[1];
+      playClip(face0 === face1 ? `pung` : `chow`);
+    }
+
     this.removeLastDiscard();
     let locknum = 1 + this.getLockedTiles().length;
     tiles.forEach(tile => {
@@ -523,6 +534,11 @@ class ClientUIMaster {
     playClip(playcounter === 1 ? `thud` : `click`);
 
     let bank = this.playerbanks[player.id];
+
+    // Remove the 'latest' class from any tiles to allow
+    // the hand to fully sort immediately after discarding.
+    let latestTile = bank.querySelector(`.latest`);
+    if (latestTile) latestTile.classList.remove(`latest`);
 
     console.debug(`${this.id} sees discard ${tile} from ${player.id}`);
 
@@ -579,6 +595,14 @@ class ClientUIMaster {
    */
   seeClaim(tiles, player, claim) {
     playClip(tiles.length === 4 ? `kong` : `multi`);
+
+    if (tiles.length === 4) {
+      playClip(`kong_voice`);
+    } else {
+      let face0 = tiles[0].dataset ? tiles[0].getTileFace() : tiles[0];
+      let face1 = tiles[1].dataset ? tiles[1].getTileFace() : tiles[1];
+      playClip(face0 === face1 ? `pung` : `chow`);
+    }
 
     // this differs from see() in that we know we need to remove one
     // `blank` tile fewer than are being revealed. So we add one, and

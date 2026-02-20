@@ -28,6 +28,12 @@ const filenames = {
   win: [`win.mp3`],
   draw: [`draw.mp3`],
   end: [`end.mp3`],
+
+  // Voice effects generated via macOS TTS
+  chow: [`chow.mp3`],
+  pung: [`pung.mp3`],
+  kong_voice: [`kong_voice.mp3`],
+  win_voice: [`win_voice.mp3`],
 };
 
 // turn filenames into playable clips:
