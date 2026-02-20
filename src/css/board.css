@@ -1,6 +1,6 @@
 :root {
-    --w: 45em;
-    --h: var(--w);
+  --w: 45em;
+  --h: var(--w);
 }
 
 .board {
@@ -8,7 +8,14 @@
   width: var(--w);
   height: var(--h);
   background-color: var(--board-background);
+  /* Extend the board background to enclose players and contain glow */
+  border: 2rem solid var(--board-background);
+  border-radius: 1rem;
+  /* Push footer away */
+  margin-bottom: 4rem;
   outline: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  /* Nice shadow for the table */
 }
 
 .board .players {
@@ -23,9 +30,9 @@
   color: var(--board-text-color);
   text-shadow:
     -1px -1px 0 var(--board-shadow),
-     1px -1px 0 var(--board-shadow),
-    -1px  1px 0 var(--board-shadow),
-     1px  1px 0 var(--board-shadow);
+    1px -1px 0 var(--board-shadow),
+    -1px 1px 0 var(--board-shadow),
+    1px 1px 0 var(--board-shadow);
   font-family: verdana;
   font-weight: bold;
   font-size: 0.8rem;
