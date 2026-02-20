@@ -52,6 +52,18 @@ class ClientUIMaster {
       globalThis.PLAYER_BANKS = this.playerbanks;
       globalThis.PLAYER_BANKS.sortTiles = e => this.sortTiles(e);
     }
+
+    // Set custom display names for single player mode
+    if (this.id === 0) {
+      this.el.dataset.name = "玩家";
+    } else {
+      this.el.dataset.name = `電腦 ${this.id}`;
+    }
+    // Also update all other banks initially (though they might be reset later)
+    this.playerbanks.forEach((bank, idx) => {
+      if (idx === 0) bank.dataset.name = "玩家";
+      else bank.dataset.name = `電腦 ${idx}`;
+    });
   }
 
   /**
