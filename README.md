@@ -2,7 +2,7 @@
 
 台灣十六張麻將單機練習遊戲，基於 [Pomax/mahjong](https://github.com/Pomax/mahjong) 修改。
 
-**[🎮 點此立即遊玩 (Click to Play)](https://chymmike.github.io/majiang-taiwan/)**  *(或是換成你部署的實際網址)*
+**[🎮 點此立即遊玩 (Click to Play)](https://chymmike.github.io/majiang-taiwan/)**
 
 ## 特色
 
