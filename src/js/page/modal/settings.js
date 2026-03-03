@@ -1,5 +1,5 @@
 import { config } from "../../../config.js";
-import { Ruleset } from "../../core/scoring/ruleset.js";
+
 import { WallHack } from "../../core/game/wall/wall-hack.js";
 
 class SettingsModal {
@@ -56,11 +56,7 @@ class SettingsModal {
 
   getOptions() {
     const options = [
-      {
-        label: `規則`,
-        key: `rules`,
-        options: [...Ruleset.getRulesetNames()],
-      },
+      // 規則固定為 Taiwan Classical（已移除其他規則）
       {
         // basic boolean flags:
       },

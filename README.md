@@ -2,13 +2,17 @@
 
 台灣十六張麻將單機練習遊戲，基於 [Pomax/mahjong](https://github.com/Pomax/mahjong) 修改。
 
+**[🎮 點此立即遊玩 (Click to Play)](https://chymmike.github.io/majiang-taiwan/)**  *(或是換成你部署的實際網址)*
+
 ## 特色
 
 - 🎯 **台灣十六張規則** — 16 張手牌、5 面子 + 1 雀頭
 - 🧮 **台數制計分** — 底 + 台，完整台數表
 - 🤖 **AI 對手** — 3 個 AI 陪你練牌
 - 🇹🇼 **全繁體中文** — UI、牌名、結算全中文化
-- 🎮 **零安裝** — 純 HTML/CSS/JS，瀏覽器直接開打
+- 🔊 **語音提示** — 加入吃、碰、槓、胡、聽牌等中文語音
+- 📱 **介面優化** — 結算台數拆解明細、牌桌及玩家資訊視覺優化
+- 🎮 **零安裝** — 純 HTML/CSS/JS，無框架，瀏覽器直接開打
 
 ## 台灣規則支援
 
@@ -20,11 +24,13 @@
 - ✅ 槓上開花、搶槓胡、海底撈月、河底撈魚
 - ✅ 大牌：大小三元、大小四喜、天胡、地胡、字一色
 
+*(由於是單機休閒練習，部分嚴格的實體賭場防作弊或特殊罰符規則可能未完全實作)*
+
 ## 快速開始
 
 ```bash
 # Clone
-git clone https://github.com/你的帳號/majiang-taiwan.git
+git clone https://github.com/chymmike/majiang-taiwan.git
 cd majiang-taiwan
 
 # 直接用瀏覽器開

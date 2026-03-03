@@ -1,8 +1,6 @@
 import { Random } from "./js/core/utils/prng.js";
 import { playlog } from "./js/core/utils/logger.js";
 
-import "./js/core/scoring/cantonese.js";
-import "./js/core/scoring/chinese-classical.js";
 import "./js/core/scoring/taiwan-classical.js";
 
 const noop = () => { };
